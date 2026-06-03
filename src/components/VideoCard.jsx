@@ -1,4 +1,6 @@
-import { Link } from "react-router-dom";
+"use client";
+
+import Link from "next/link";
 import { Card, CardContent, CardMedia, Stack, Typography } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PlayCircleFilledWhiteIcon from "@mui/icons-material/PlayCircleFilledWhite";
@@ -28,7 +30,7 @@ const VideoCard = ({ video }) => {
         },
       }}
     >
-      <Link className="media-link" to={videoId ? `/video/${videoId}` : demoVideoUrl}>
+      <Link className="media-link" href={videoId ? `/video/${videoId}` : demoVideoUrl}>
         <CardMedia
           image={snippet?.thumbnails?.high?.url || demoThumbnailUrl}
           alt={title}
@@ -38,13 +40,13 @@ const VideoCard = ({ video }) => {
       </Link>
 
       <CardContent sx={{ minHeight: 128, p: 2 }}>
-        <Link to={videoId ? `/video/${videoId}` : demoVideoUrl}>
+        <Link href={videoId ? `/video/${videoId}` : demoVideoUrl}>
           <Typography color="white" fontWeight={800} lineHeight={1.35} variant="subtitle1">
             {title.length > 78 ? `${title.slice(0, 78)}...` : title}
           </Typography>
         </Link>
 
-        <Link to={snippet?.channelId ? `/channel/${snippet.channelId}` : demoChannelUrl}>
+        <Link href={snippet?.channelId ? `/channel/${snippet.channelId}` : demoChannelUrl}>
           <Stack direction="row" alignItems="center" gap={0.75} mt={1.5}>
             <Typography variant="body2" color="#8F9AA7" fontWeight={600}>
               {channelTitle}

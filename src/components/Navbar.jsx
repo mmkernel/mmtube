@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import {
   Box,
@@ -14,7 +16,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import HomeIcon from "@mui/icons-material/Home";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 import logo from "../logo.png";
 import { SearchBar } from "./";
@@ -53,7 +55,7 @@ const Navbar = () => {
           <MenuIcon />
         </IconButton>
 
-        <Link className="brand-link" to="/" aria-label="MMTube home">
+        <Link className="brand-link" href="/" aria-label="MMTube home">
           <Box component="img" src={logo} alt="" sx={{ height: 25, width: 150 }} />
         </Link>
 
@@ -76,7 +78,7 @@ const Navbar = () => {
         }}
       >
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ p: 2 }}>
-          <Link className="brand-link" to="/" aria-label="MMTube home" onClick={closeMenu}>
+          <Link className="brand-link" href="/" aria-label="MMTube home" onClick={closeMenu}>
             <Box component="img" src={logo} alt="" sx={{ height: 25, width: 150 }} />
           </Link>
           <IconButton aria-label="Close menu" onClick={closeMenu} sx={{ color: "#66FCF1" }}>
@@ -87,7 +89,7 @@ const Navbar = () => {
         <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
 
         <List component="nav" aria-label="Mobile navigation" sx={{ px: 1.5, py: 2 }}>
-          <ListItemButton component={Link} to="/" onClick={closeMenu} sx={{ borderRadius: 2, mb: 0.5 }}>
+          <ListItemButton component={Link} href="/" onClick={closeMenu} sx={{ borderRadius: 2, mb: 0.5 }}>
             <ListItemIcon sx={{ color: "#66FCF1", minWidth: 40 }}>
               <HomeIcon />
             </ListItemIcon>
@@ -104,7 +106,7 @@ const Navbar = () => {
                 <ListItemButton
                   component={Link}
                   key={name}
-                  to={`/search/${encodeURIComponent(name)}`}
+                  href={`/search/${encodeURIComponent(name)}`}
                   onClick={closeMenu}
                   sx={{ borderRadius: 2, mb: 0.5 }}
                 >

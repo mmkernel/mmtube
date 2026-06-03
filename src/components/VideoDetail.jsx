@@ -1,29 +1,38 @@
+"use client";
+
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import ReactPlayer from "react-player";
+import Link from "next/link";
+import dynamic from "next/dynamic";
 import { Alert, Box, Stack, Typography } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 import { Videos, Loader } from "./";
 import { fetchFromAPI } from "../utils/fetchFromAPI";
 
+const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
+
 const formatCount = (value) => {
   const number = Number(value);
   return Number.isFinite(number) ? number.toLocaleString("en-US") : "0";
 };
 
-const VideoDetail = () => {
-  const [videoDetail, setVideoDetail] = useState(null);
-  const [videos, setVideos] = useState(null);
+const VideoDetail = ({ id, initialVideoDetail = null, initialVideos = null }) => {
+  const [videoDetail, setVideoDetail] = useState(initialVideoDetail);
+  const [videos, setVideos] = useState(initialVideos);
   const [error, setError] = useState("");
-  const { id } = useParams();
 
   useEffect(() => {
     let ignore = false;
 
-    setVideoDetail(null);
-    setVideos(null);
+    setVideoDetail(initialVideoDetail);
+    setVideos(initialVideos);
     setError("");
+
+    if (initialVideoDetail || initialVideos !== null) {
+      return () => {
+        ignore = true;
+      };
+    }
 
     const fetchVideo = async () => {
       try {
@@ -49,7 +58,7 @@ const VideoDetail = () => {
     return () => {
       ignore = true;
     };
-  }, [id]);
+  }, [id, initialVideoDetail, initialVideos]);
 
   if (!videoDetail?.snippet && !error) return <Loader />;
 
@@ -81,7 +90,7 @@ const VideoDetail = () => {
                 gap={1.5}
                 mt={2}
               >
-                <Link to={channelId ? `/channel/${channelId}` : "/"}>
+                <Link href={channelId ? `/channel/${channelId}` : "/"}>
                   <Stack direction="row" alignItems="center" gap={0.75}>
                     <Typography variant="subtitle1" color="#fff" fontWeight={800}>
                       {channelTitle}

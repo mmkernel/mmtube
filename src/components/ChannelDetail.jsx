@@ -1,22 +1,28 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { Alert, Box } from "@mui/material";
-import { useParams } from "react-router-dom";
 
 import { Videos, ChannelCard } from "./";
 import { fetchFromAPI } from "../utils/fetchFromAPI";
 
-const ChannelDetail = () => {
-  const [channelDetail, setChannelDetail] = useState(null);
-  const [videos, setVideos] = useState(null);
+const ChannelDetail = ({ id, initialChannelDetail = null, initialVideos = null }) => {
+  const [channelDetail, setChannelDetail] = useState(initialChannelDetail);
+  const [videos, setVideos] = useState(initialVideos);
   const [error, setError] = useState("");
-  const { id } = useParams();
 
   useEffect(() => {
     let ignore = false;
 
-    setChannelDetail(null);
-    setVideos(null);
+    setChannelDetail(initialChannelDetail);
+    setVideos(initialVideos);
     setError("");
+
+    if (initialChannelDetail || initialVideos !== null) {
+      return () => {
+        ignore = true;
+      };
+    }
 
     const fetchResults = async () => {
       try {
@@ -40,7 +46,7 @@ const ChannelDetail = () => {
     return () => {
       ignore = true;
     };
-  }, [id]);
+  }, [id, initialChannelDetail, initialVideos]);
 
   return (
     <Box component="main" sx={{ minHeight: "95vh" }}>

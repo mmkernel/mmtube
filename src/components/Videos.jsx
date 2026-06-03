@@ -1,3 +1,5 @@
+"use client";
+
 import { Box, Stack, Typography } from "@mui/material";
 
 import { ChannelCard, Loader, VideoCard } from "./";

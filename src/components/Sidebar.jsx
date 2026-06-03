@@ -1,3 +1,5 @@
+"use client";
+
 import { ButtonBase, Stack, Typography } from "@mui/material";
 
 import { categoryGroups } from "../utils/constants";
