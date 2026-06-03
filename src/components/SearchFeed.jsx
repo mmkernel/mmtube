@@ -1,21 +1,27 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { Alert, Box, Typography } from "@mui/material";
-import { useParams } from "react-router-dom";
 
 import { Videos } from "./";
 import { fetchFromAPI } from "../utils/fetchFromAPI";
 
-const SearchFeed = () => {
-  const [videos, setVideos] = useState(null);
+const SearchFeed = ({ searchTerm, initialVideos = null }) => {
+  const [videos, setVideos] = useState(initialVideos);
   const [error, setError] = useState("");
-  const { searchTerm = "" } = useParams();
-  const decodedSearchTerm = decodeURIComponent(searchTerm);
+  const decodedSearchTerm = searchTerm;
 
   useEffect(() => {
     let ignore = false;
 
-    setVideos(null);
+    setVideos(initialVideos);
     setError("");
+
+    if (initialVideos !== null) {
+      return () => {
+        ignore = true;
+      };
+    }
 
     fetchFromAPI(`search?part=snippet&q=${encodeURIComponent(decodedSearchTerm)}`)
       .then((data) => {
@@ -33,7 +39,7 @@ const SearchFeed = () => {
     return () => {
       ignore = true;
     };
-  }, [decodedSearchTerm]);
+  }, [decodedSearchTerm, initialVideos]);
 
   return (
     <Box component="main" sx={{ minHeight: "95vh", p: { xs: 2, md: 3 } }}>
