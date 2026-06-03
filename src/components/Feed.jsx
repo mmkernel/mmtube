@@ -39,6 +39,7 @@ const Feed = () => {
         sx={{
           borderBottom: { xs: "1px solid rgba(255,255,255,0.08)", md: "none" },
           borderRight: { md: "1px solid rgba(255,255,255,0.08)" },
+          display: { xs: "none", md: "block" },
           px: { xs: 2, md: 2.5 },
           py: 2,
         }}

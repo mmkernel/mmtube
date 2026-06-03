@@ -1,6 +1,6 @@
 import { ButtonBase, Stack, Typography } from "@mui/material";
 
-import { categories } from "../utils/constants";
+import { categoryGroups } from "../utils/constants";
 
 const Sidebar = ({ selectedCategory, setSelectedCategory }) => (
   <Stack
@@ -16,30 +16,47 @@ const Sidebar = ({ selectedCategory, setSelectedCategory }) => (
       width: { xs: "100%", md: 230 },
     }}
   >
-    {categories.map(({ icon, name }) => {
-      const isSelected = name === selectedCategory;
-
-      return (
-        <ButtonBase
-          className="category-btn"
-          key={name}
-          onClick={() => setSelectedCategory(name)}
+    {categoryGroups.map((group) => (
+      <Stack key={group.title} spacing={0.75} sx={{ mb: 1.75 }}>
+        <Typography
+          variant="overline"
           sx={{
-            backgroundColor: isSelected ? "rgba(102, 252, 241, 0.16)" : "transparent",
-            border: "1px solid",
-            borderColor: isSelected ? "rgba(102, 252, 241, 0.42)" : "transparent",
-            color: "white",
-            justifyContent: "flex-start",
-            minWidth: { xs: "max-content", md: "100%" },
+            color: "#8F9AA7",
+            fontSize: 11,
+            fontWeight: 900,
+            letterSpacing: 0,
+            px: 1.5,
           }}
         >
-          <span className="category-icon">{icon}</span>
-          <Typography component="span" fontSize={14} fontWeight={700} noWrap>
-            {name}
-          </Typography>
-        </ButtonBase>
-      );
-    })}
+          {group.title}
+        </Typography>
+
+        {group.items.map(({ icon, name }) => {
+          const isSelected = name === selectedCategory;
+
+          return (
+            <ButtonBase
+              className="category-btn"
+              key={name}
+              onClick={() => setSelectedCategory(name)}
+              sx={{
+                backgroundColor: isSelected ? "rgba(102, 252, 241, 0.16)" : "transparent",
+                border: "1px solid",
+                borderColor: isSelected ? "rgba(102, 252, 241, 0.42)" : "transparent",
+                color: "white",
+                justifyContent: "flex-start",
+                minWidth: { xs: "max-content", md: "100%" },
+              }}
+            >
+              <span className="category-icon">{icon}</span>
+              <Typography component="span" fontSize={14} fontWeight={700} noWrap>
+                {name}
+              </Typography>
+            </ButtonBase>
+          );
+        })}
+      </Stack>
+    ))}
   </Stack>
 );
 
