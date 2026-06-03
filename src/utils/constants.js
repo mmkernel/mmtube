@@ -1,4 +1,3 @@
-import HomeIcon from '@mui/icons-material/Home';
 import CodeIcon from '@mui/icons-material/Code';
 import CloudQueueIcon from '@mui/icons-material/CloudQueue';
 import HtmlIcon from '@mui/icons-material/Html';

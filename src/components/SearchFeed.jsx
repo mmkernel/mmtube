@@ -1,28 +1,50 @@
-import { useState, useEffect } from "react";
-import { Typography, Box } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Alert, Box, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 
-import { fetchFromAPI } from "../utils/fetchFromAPI";
 import { Videos } from "./";
+import { fetchFromAPI } from "../utils/fetchFromAPI";
 
 const SearchFeed = () => {
   const [videos, setVideos] = useState(null);
-  const { searchTerm } = useParams();
+  const [error, setError] = useState("");
+  const { searchTerm = "" } = useParams();
+  const decodedSearchTerm = decodeURIComponent(searchTerm);
 
   useEffect(() => {
-    fetchFromAPI(`search?part=snippet&q=${searchTerm}`)
-      .then((data) => setVideos(data.items))
-  }, [searchTerm]);
+    let ignore = false;
+
+    setVideos(null);
+    setError("");
+
+    fetchFromAPI(`search?part=snippet&q=${encodeURIComponent(decodedSearchTerm)}`)
+      .then((data) => {
+        if (!ignore) {
+          setVideos(data?.items ?? []);
+        }
+      })
+      .catch(() => {
+        if (!ignore) {
+          setVideos([]);
+          setError("Search failed. Check your API key or try another term.");
+        }
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [decodedSearchTerm]);
 
   return (
-    <Box p={2} minHeight="95vh">
-      <Typography variant="h4" fontWeight={900}  color="white" mb={3} ml={{ sm: "100px"}}>
-        Search Results for <span style={{ color: "#FC1503" }}>{searchTerm}</span> videos
+    <Box component="main" sx={{ minHeight: "95vh", p: { xs: 2, md: 3 } }}>
+      <Typography variant="overline" sx={{ color: "#66FCF1", fontWeight: 800 }}>
+        Search results
       </Typography>
-      <Box display="flex">
-        <Box sx={{ mr: { sm: '100px' } }}/>
-        {<Videos videos={videos} />}
-      </Box>
+      <Typography variant="h4" fontWeight={900} color="white" mb={3}>
+        {decodedSearchTerm}
+      </Typography>
+      {error && <Alert severity="warning" sx={{ mb: 2 }}>{error}</Alert>}
+      <Videos videos={videos} />
     </Box>
   );
 };

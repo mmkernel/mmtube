@@ -1,10 +1,9 @@
-import React from 'react';
 import { Box, CircularProgress, Stack } from '@mui/material';
 
-const Loader = () =>  (
-  <Box minHeight="95vh">
-    <Stack direction='row' justifyContent='center' alignItems='center' height='80vh' >
-      <CircularProgress />
+const Loader = ({ compact = false }) => (
+  <Box minHeight={compact ? 240 : '95vh'}>
+    <Stack direction='row' justifyContent='center' alignItems='center' height={compact ? 240 : '80vh'}>
+      <CircularProgress sx={{ color: '#66FCF1' }} />
     </Stack>
   </Box>
 );

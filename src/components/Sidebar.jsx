@@ -1,36 +1,46 @@
-import React from "react";
-import { Stack } from "@mui/material";
+import { ButtonBase, Stack, Typography } from "@mui/material";
 
 import { categories } from "../utils/constants";
 
-const Categories = ({ selectedCategory, setSelectedCategory }) => (
+const Sidebar = ({ selectedCategory, setSelectedCategory }) => (
   <Stack
-    direction="row"
+    component="nav"
+    aria-label="Video categories"
+    spacing={{ xs: 1, md: 0.75 }}
     sx={{
-      overflowY: "auto",
-      height: { sx: "auto", md: "95%" },
-      flexDirection: { md: "column" },
+      flexDirection: { xs: "row", md: "column" },
+      overflowX: { xs: "auto", md: "visible" },
+      overflowY: "hidden",
+      pb: { xs: 1, md: 0 },
+      pr: { md: 1 },
+      width: { xs: "100%", md: 230 },
     }}
   >
-    {categories.map((category) => (
-      <button
-        className="category-btn"
-        onClick={() => setSelectedCategory(category.name)}
-        style={{
-          background: category.name === selectedCategory && "#45A29E",
-          color: "white"
-        }}
-        key={category.name}
-      >
-        <span style={{ color: category.name === selectedCategory ? "white" : "#66FCF1", marginRight: "15px" }}>
-          {category.icon}
-        </span>
-        <span style={{ opacity: category.name === selectedCategory ? "1" : "0.8" }}>
-          {category.name}
-        </span>
-      </button>
-    ))}
+    {categories.map(({ icon, name }) => {
+      const isSelected = name === selectedCategory;
+
+      return (
+        <ButtonBase
+          className="category-btn"
+          key={name}
+          onClick={() => setSelectedCategory(name)}
+          sx={{
+            backgroundColor: isSelected ? "rgba(102, 252, 241, 0.16)" : "transparent",
+            border: "1px solid",
+            borderColor: isSelected ? "rgba(102, 252, 241, 0.42)" : "transparent",
+            color: "white",
+            justifyContent: "flex-start",
+            minWidth: { xs: "max-content", md: "100%" },
+          }}
+        >
+          <span className="category-icon">{icon}</span>
+          <Typography component="span" fontSize={14} fontWeight={700} noWrap>
+            {name}
+          </Typography>
+        </ButtonBase>
+      );
+    })}
   </Stack>
 );
 
-export default Categories;
+export default Sidebar;

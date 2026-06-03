@@ -1,42 +1,62 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Alert, Box } from "@mui/material";
 import { useParams } from "react-router-dom";
-import { Box } from "@mui/material";
 
 import { Videos, ChannelCard } from "./";
 import { fetchFromAPI } from "../utils/fetchFromAPI";
 
 const ChannelDetail = () => {
-  const [channelDetail, setChannelDetail] = useState();
+  const [channelDetail, setChannelDetail] = useState(null);
   const [videos, setVideos] = useState(null);
-
+  const [error, setError] = useState("");
   const { id } = useParams();
 
   useEffect(() => {
+    let ignore = false;
+
+    setChannelDetail(null);
+    setVideos(null);
+    setError("");
+
     const fetchResults = async () => {
-      const data = await fetchFromAPI(`channels?part=snippet&id=${id}`);
+      try {
+        const data = await fetchFromAPI(`channels?part=snippet,statistics&id=${id}`);
+        const videosData = await fetchFromAPI(`search?channelId=${id}&part=snippet%2Cid&order=date`);
 
-      setChannelDetail(data?.items[0]);
-
-      const videosData = await fetchFromAPI(`search?channelId=${id}&part=snippet%2Cid&order=date`);
-
-      setVideos(videosData?.items);
+        if (!ignore) {
+          setChannelDetail(data?.items?.[0] ?? null);
+          setVideos(videosData?.items ?? []);
+        }
+      } catch {
+        if (!ignore) {
+          setVideos([]);
+          setError("Could not load this channel. Check your API key or try again later.");
+        }
+      }
     };
 
     fetchResults();
+
+    return () => {
+      ignore = true;
+    };
   }, [id]);
 
   return (
-    <Box minHeight="95vh">
-      <Box>
-        <div style={{
-          height:'300px',
-          background: 'linear-gradient(90deg, rgba(0,238,247,1) 0%, rgba(206,3,184,1) 100%, rgba(0,212,255,1) 100%)',
-          zIndex: 10,
-        }} />
-        <ChannelCard channelDetail={channelDetail} marginTop="-93px" />
+    <Box component="main" sx={{ minHeight: "95vh" }}>
+      <Box
+        sx={{
+          background:
+            "radial-gradient(circle at 20% 20%, rgba(102,252,241,0.24), transparent 30%), linear-gradient(135deg, #101820 0%, #182433 45%, #0B0C10 100%)",
+          borderBottom: "1px solid rgba(255,255,255,0.1)",
+          height: { xs: 230, md: 300 },
+        }}
+      />
+      <Box sx={{ mt: { xs: -10, md: -12 }, px: 2 }}>
+        <ChannelCard channelDetail={channelDetail} />
       </Box>
-      <Box p={2} display="flex">
-      <Box sx={{ mr: { sm: '100px' } }}/>
+      <Box sx={{ p: { xs: 2, md: 3 } }}>
+        {error && <Alert severity="warning" sx={{ mb: 2 }}>{error}</Alert>}
         <Videos videos={videos} />
       </Box>
     </Box>
