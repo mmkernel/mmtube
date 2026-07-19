@@ -15,10 +15,9 @@ export async function GET(request) {
   }
 
   try {
-    // Decode the endpoint so "?" and "&" are evaluated correctly by Axios on the server
-    const decodedEndpoint = decodeURIComponent(endpoint);
-
-    const data = await fetchFromAPI(decodedEndpoint);
+    // Pass the raw endpoint string.
+    // The URL constructor automatically handles basic decoding for searchParams.get()
+    const data = await fetchFromAPI(endpoint);
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(
