@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { fetchFromAPI } from "../../../utils/fetchFromAPI";
 
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
@@ -15,14 +16,25 @@ export async function GET(request) {
   }
 
   try {
-    // Pass the raw endpoint string.
-    // The URL constructor automatically handles basic decoding for searchParams.get()
     const data = await fetchFromAPI(endpoint);
     return NextResponse.json(data);
   } catch (error) {
+    const status = error?.response?.status || (error?.message?.includes("Missing RapidAPI key") ? 500 : 502);
+    const upstreamMessage =
+      error?.response?.data?.message ||
+      error?.response?.data?.error ||
+      error?.message ||
+      "Failed to fetch YouTube data.";
+
+    console.error("YouTube API proxy failed:", {
+      endpoint,
+      status,
+      message: upstreamMessage,
+    });
+
     return NextResponse.json(
-      { error: error.message || "Failed to fetch YouTube data." },
-      { status: 500 },
+      { error: upstreamMessage },
+      { status },
     );
   }
 }

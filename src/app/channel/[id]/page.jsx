@@ -1,5 +1,6 @@
 import { ChannelDetail } from "../../../components";
 import { fetchFromAPI } from "../../../utils/fetchFromAPI";
+import { getThumbnailUrl } from "../../../utils/thumbnails";
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
@@ -9,7 +10,7 @@ export async function generateMetadata({ params }) {
     const channel = data?.items?.[0];
     const title = channel?.snippet?.title || "Channel";
     const description = channel?.snippet?.description || `Watch ${title} videos on MMTube.`;
-    const image = channel?.snippet?.thumbnails?.high?.url;
+    const image = getThumbnailUrl(channel?.snippet?.thumbnails, "");
 
     return {
       title,

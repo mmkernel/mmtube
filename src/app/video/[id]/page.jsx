@@ -1,5 +1,6 @@
 import { VideoDetail } from "../../../components";
 import { fetchFromAPI } from "../../../utils/fetchFromAPI";
+import { getThumbnailUrl } from "../../../utils/thumbnails";
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
@@ -9,7 +10,7 @@ export async function generateMetadata({ params }) {
     const video = data?.items?.[0];
     const title = video?.snippet?.title || "Video";
     const description = video?.snippet?.description || `Watch ${title} on MMTube.`;
-    const image = video?.snippet?.thumbnails?.high?.url;
+    const image = getThumbnailUrl(video?.snippet?.thumbnails, "");
 
     return {
       title,

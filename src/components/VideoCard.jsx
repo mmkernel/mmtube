@@ -5,13 +5,15 @@ import { Card, CardContent, CardMedia, Stack, Typography } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PlayCircleFilledWhiteIcon from "@mui/icons-material/PlayCircleFilledWhite";
 
-import { demoThumbnailUrl, demoVideoUrl, demoVideoTitle, demoChannelUrl, demoChannelTitle } from "../utils/constants";
+import { demoVideoUrl, demoVideoTitle, demoChannelUrl, demoChannelTitle } from "../utils/constants";
+import { getThumbnailUrl } from "../utils/thumbnails";
 
 const VideoCard = ({ video }) => {
   const videoId = video?.id?.videoId;
   const snippet = video?.snippet ?? {};
   const title = snippet?.title || demoVideoTitle;
   const channelTitle = snippet?.channelTitle || demoChannelTitle;
+  const thumbnailUrl = getThumbnailUrl(snippet?.thumbnails);
 
   return (
     <Card
@@ -32,7 +34,7 @@ const VideoCard = ({ video }) => {
     >
       <Link className="media-link" href={videoId ? `/video/${videoId}` : demoVideoUrl}>
         <CardMedia
-          image={snippet?.thumbnails?.high?.url || demoThumbnailUrl}
+          image={thumbnailUrl}
           alt={title}
           sx={{ aspectRatio: "16 / 9", height: "auto", width: "100%" }}
         />

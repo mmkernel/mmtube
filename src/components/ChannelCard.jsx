@@ -5,11 +5,12 @@ import { Avatar, Box, CardContent, Stack, Typography } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 import { demoProfilePicture } from '../utils/constants';
+import { getThumbnailUrl } from '../utils/thumbnails';
 
 const ChannelCard = ({ channelDetail, marginTop }) => {
   const channelId = channelDetail?.id?.channelId || channelDetail?.id;
   const title = channelDetail?.snippet?.title || 'Channel';
-  const avatar = channelDetail?.snippet?.thumbnails?.high?.url || demoProfilePicture;
+  const avatar = getThumbnailUrl(channelDetail?.snippet?.thumbnails, demoProfilePicture);
   const subscribers = channelDetail?.statistics?.subscriberCount;
 
   return (

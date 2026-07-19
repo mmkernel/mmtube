@@ -2,8 +2,28 @@ import axios from "axios";
 
 export const BASE_URL = "https://youtube-v31.p.rapidapi.com";
 
+const API_KEY_NAMES = ["RAPID_API_KEY", "NEXT_PUBLIC_RAPID_API_KEY", "REACT_APP_RAPID_API_KEY"];
+const ALLOWED_ENDPOINTS = new Set(["search", "videos", "channels"]);
+
+const getRapidApiKey = () => API_KEY_NAMES.map((name) => process.env[name]).find(Boolean);
+
+const buildYoutubeUrl = (endpoint) => {
+  const normalizedEndpoint = endpoint.startsWith("/") ? endpoint.slice(1) : endpoint;
+  const parsedUrl = new URL(normalizedEndpoint, `${BASE_URL}/`);
+  const resource = parsedUrl.pathname.replace(/^\/+/, "");
+
+  if (!ALLOWED_ENDPOINTS.has(resource)) {
+    throw new Error("Unsupported YouTube API endpoint.");
+  }
+
+  if (!parsedUrl.searchParams.has("maxResults")) {
+    parsedUrl.searchParams.set("maxResults", "50");
+  }
+
+  return `${BASE_URL}/${resource}?${parsedUrl.searchParams.toString()}`;
+};
+
 export const fetchFromAPI = async (url) => {
-  // 1. Browser Environment (Frontend calls)
   if (typeof window !== "undefined") {
     const { data } = await axios.get(
       `/api/youtube?endpoint=${encodeURIComponent(url)}`,
@@ -11,19 +31,12 @@ export const fetchFromAPI = async (url) => {
     return data;
   }
 
-  // 2. Server Environment (Backend Route calls)
-  const apiKey = process.env.RAPID_API_KEY;
+  const apiKey = getRapidApiKey();
   if (!apiKey) {
-    throw new Error("Missing RAPID_API_KEY environment variable.");
+    throw new Error(`Missing RapidAPI key. Set one of: ${API_KEY_NAMES.join(", ")}.`);
   }
 
-  // Strip any leading slashes to prevent double slashes in the final URL
-  const cleanUrl = url.startsWith("/") ? url.slice(1) : url;
-
-  const { data } = await axios.get(`${BASE_URL}/${cleanUrl}`, {
-    params: {
-      maxResults: 50,
-    },
+  const { data } = await axios.get(buildYoutubeUrl(url), {
     headers: {
       "X-RapidAPI-Key": apiKey,
       "X-RapidAPI-Host": "youtube-v31.p.rapidapi.com",
